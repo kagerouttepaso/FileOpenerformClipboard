@@ -31,7 +31,7 @@ namespace FileOpenerformClipboard
 						str.Replace("\r", "")
 				//各行頭の空白文字とおせっかいな行末の\を削除
 						.Split('\n')
-						.Select(s => Regex.Replace(s, @"^[\s]*(.*?)[\\]?$", "$1"))
+						.Select(s => Regex.Replace(s.Trim(), @"^(.*?)[\\]?$", "$1"))
 						.ToArray()
 					);
 			//作った文字列がフォルダかファイルのパスならば、ファイルオープン
