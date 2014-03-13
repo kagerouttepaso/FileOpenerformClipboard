@@ -1,0 +1,3 @@
+[submodule "FileOpenerformClipboard/CsCommons"]
+	path = FileOpenerformClipboard/CsCommons
+	url = https://github.com/kagerouttepaso/CsCommons.git

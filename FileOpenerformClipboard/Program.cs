@@ -9,6 +9,7 @@ using System.Threading;
 
 using System.Text.RegularExpressions;
 using System.IO;
+using Commons.Extensions;
 
 namespace FileOpenerformClipboard
 {
@@ -51,14 +52,18 @@ namespace FileOpenerformClipboard
 
                 }
             };
-            serch(0, "");
+            (lines.Count - 1).Takes(i =>
+            {
+                serch(i, "");
+            });
 
 
 			//作った文字列がフォルダかファイルのパスならば、ファイルオープン
             if (list.Any(uri => (Directory.Exists(uri) || File.Exists(uri))))
             {
-                var filename = list.First(uri => (Directory.Exists(uri) || File.Exists(uri)));
-                System.Diagnostics.Process.Start(filename);
+                var filename = list.Where(x => !string.IsNullOrWhiteSpace(x) && x != "\\" && !Regex.IsMatch(x, @"^[\\][\\][\\]"))
+                    .Where(uri => (Directory.Exists(uri) || File.Exists(uri)));
+                System.Diagnostics.Process.Start(filename.OrderBy(x=>x).First());
             }
 
 			//おまけ 選択された文字列の中にURLがあったら開いてみる
