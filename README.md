@@ -10,25 +10,41 @@ FileOpenerformClipboard
 
 URLとか
 
-    http://google.com
-    https://google.com
+```
+http://google.com
+https://google.com
+```
 
 サーバー上のfolderとか
 
-    \\server\folder
+```
+\\server\folder
+```
 
 複数行で記述されたファイルとか
 
-    \\server\folder
-    filename.cpp
+```
+ex1)
+\\server\folder
+filename.cpp
 
-複数行で記述されたファイルとか2
+ex2)
+\\server\folder\
+filename.cpp
+```
 
-    \\server\folder\
-    filename.cpp
+前後に関係ない文字列があってもファイルが開ける
 
-複数行で記述されたファイルとか3
+```
+invalid text
+\\server\folder\
+subfolder\subfolder2
+filename.cpp
+invalied string
+```
 
-    \\server\folder\
-    subfolder\subfolder2
-    filename.cpp
+## 注意
+ファイルパスの解析アルゴリズムがヘボいので、
+あまり大きな行数をコピーすると加速度的にメモリを食います。  
+15行行くらいまでなら60MB程度ですみますが、
+18行目で550MB、20行では1.3GBほどメモリを食い出します。
