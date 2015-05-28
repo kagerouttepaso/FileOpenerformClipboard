@@ -3,7 +3,7 @@ FileOpenerformClipboard
 [![Build status](https://ci.appveyor.com/api/projects/status/j2nm6tb7cd02gbeq?svg=true)](https://ci.appveyor.com/project/kagerouttepaso/fileopenerformclipboard)
 
 ## ダウンロード
-[AppVeyor](https://ci.appveyor.com/api/buildjobs/2ixo7go36kpccc7m/artifacts/FileOpenerformClipboard/bin/Release/FileOpenerformClipboard.exe)からダウンロードできます。
+[Release](https://github.com/kagerouttepaso/FileOpenerformClipboard/releases)からダウンロードできます。
 
 ## 使い方
 
