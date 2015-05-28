@@ -1,5 +1,6 @@
 FileOpenerformClipboard
 =======================
+[![Build status](https://ci.appveyor.com/api/projects/status/j2nm6tb7cd02gbeq?svg=true)](https://ci.appveyor.com/project/kagerouttepaso/fileopenerformclipboard)
 
 ## 使い方
 
