@@ -12,8 +12,13 @@ artifacts:
   name: FileOpenerFromClipboard_Stable
 deploy:
 - provider: GitHub
-  tag: Release-v$(appveyor_build_version)
-  release: 
+  tag: 
+  release: Release-v$(appveyor_build_version)
   auth_token:
     secure: FZGlOzjXOlI70ZNfll82No7ADk6X0UClnOhb3xoiRm9UEnTpFI3L3zDfNNdW357L
   artifact: FileOpenerformClipboard\bin\Release\FileOpenerformClipboard.exe
+  draft: true
+  prerelease: false
+  on:
+    branch: /Release/
+    appveyor_repo_tag: true        # deploy on tag push only
