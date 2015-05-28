@@ -1,0 +1,12 @@
+version: 1.0.0.{build}
+configuration: Release
+platform: x86
+install:
+- git submodule init
+- git submodule update
+build:
+  project: FileOpenerformClipboard.sln
+  verbosity: minimal
+artifacts:
+- path: FileOpenerformClipboard\bin\Release\FileOpenerformClipboard.exe
+  name: FileOpenerFromClipboard_Stable
