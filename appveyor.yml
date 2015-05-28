@@ -17,3 +17,8 @@ deploy:
   auth_token:
     secure: FZGlOzjXOlI70ZNfll82No7ADk6X0UClnOhb3xoiRm9UEnTpFI3L3zDfNNdW357L
   artifact: FileOpenerformClipboard\bin\Release\FileOpenerformClipboard.exe
+  draft: false
+  prerelease: false
+  on:
+    branch: master                 # release from master branch only
+    appveyor_repo_tag: true        # deploy on tag push only
