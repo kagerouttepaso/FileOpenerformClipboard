@@ -10,3 +10,8 @@ build:
 artifacts:
 - path: FileOpenerformClipboard\bin\Release\FileOpenerformClipboard.exe
   name: FileOpenerFromClipboard_Stable
+deploy:
+- provider: GitHub
+  tag: FileOpenerFromClipboard-v$(appveyor_build_version)
+  release: FileOpenerFromClipboard-v$(appveyor_build_version)
+  artifact: FileOpenerformClipboard\bin\Release\FileOpenerformClipboard.exe
