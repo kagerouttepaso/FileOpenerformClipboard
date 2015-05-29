@@ -21,4 +21,4 @@ deploy:
   draft: false
   prerelease: false
   on:
-    branch: /release/
+    branch: /master/
