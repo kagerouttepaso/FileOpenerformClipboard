@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
 [assembly: AssemblyTitle( "FileOpenerformClipboard" )]
-[assembly: AssemblyDescription( "ネットワークフォルダのリンクをコピーして起動してください。一応複数行たいおう" )]
+[assembly: AssemblyDescription("ネットワークフォルダのリンクをコピーして起動してください。一応複数行対応")]
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany( "" )]
 [assembly: AssemblyProduct( "FileOpenerformClipboard" )]
-[assembly: AssemblyCopyright( "橘内大輔 2012" )]
+[assembly: AssemblyCopyright("橘内大輔 2015")]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // すべての値を指定するか、下のように '*' を使ってビルドおよびリビジョン番号を 
 // 既定値にすることができます:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion( "1.0.0.0" )]
-[assembly: AssemblyFileVersion( "1.0.0.0" )]
+[assembly: AssemblyVersion("1.0.1.0")]
+[assembly: AssemblyFileVersion("1.0.1.0")]

@@ -1,4 +1,5 @@
-version: 1.0.0.{build}
+version: 1.0.1.{build}
+skip_tags: true
 configuration: Release
 platform: x86
 install:
@@ -12,12 +13,12 @@ artifacts:
   name: FileOpenerFromClipboard_Stable
 deploy:
 - provider: GitHub
-  tag: 
-  release: Release-v$(appveyor_build_version)
+  tag: FileOpenerFromClipboard-v$(appveyor_build_version)
+  release: FileOpenerFromClipboard-v$(appveyor_build_version)
   auth_token:
     secure: FZGlOzjXOlI70ZNfll82No7ADk6X0UClnOhb3xoiRm9UEnTpFI3L3zDfNNdW357L
   artifact: FileOpenerformClipboard\bin\Release\FileOpenerformClipboard.exe
-  draft: true
+  draft: false
   prerelease: false
   on:
-    branch: /Release/
+    branch: /master/
