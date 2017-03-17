@@ -15,6 +15,7 @@ deploy:
 - provider: GitHub
   tag: FileOpenerFromClipboard-v$(appveyor_build_version)
   release: FileOpenerFromClipboard-v$(appveyor_build_version)
+  description: Release時の説明
   auth_token:
     secure: FZGlOzjXOlI70ZNfll82No7ADk6X0UClnOhb3xoiRm9UEnTpFI3L3zDfNNdW357L
   artifact: FileOpenerformClipboard\bin\Release\FileOpenerformClipboard.exe
