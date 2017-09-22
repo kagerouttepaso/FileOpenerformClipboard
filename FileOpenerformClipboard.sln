@@ -7,7 +7,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileOpenerformClipboard", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileOpenerformClipboardTests", "FileOpenerformClipboardTests\FileOpenerformClipboardTests.csproj", "{AB1E65F7-32AA-423C-A368-66714B3A34CB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileOpenerFromClipboardGui", "FileOpenerFromClipboardGui\FileOpenerFromClipboardGui.csproj", "{187F29FE-A8FB-4CDB-8D55-0FA435D29A9A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileOpenerformClipboardCui", "FileOpenerformClipboardCui\FileOpenerformClipboardCui.csproj", "{6C4CFADD-255E-4D28-BD6D-F87D7CDAE351}"
+EndProject
 Global
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -21,6 +28,14 @@ Global
 		{AB1E65F7-32AA-423C-A368-66714B3A34CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB1E65F7-32AA-423C-A368-66714B3A34CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB1E65F7-32AA-423C-A368-66714B3A34CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{187F29FE-A8FB-4CDB-8D55-0FA435D29A9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{187F29FE-A8FB-4CDB-8D55-0FA435D29A9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{187F29FE-A8FB-4CDB-8D55-0FA435D29A9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{187F29FE-A8FB-4CDB-8D55-0FA435D29A9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C4CFADD-255E-4D28-BD6D-F87D7CDAE351}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C4CFADD-255E-4D28-BD6D-F87D7CDAE351}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C4CFADD-255E-4D28-BD6D-F87D7CDAE351}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C4CFADD-255E-4D28-BD6D-F87D7CDAE351}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
