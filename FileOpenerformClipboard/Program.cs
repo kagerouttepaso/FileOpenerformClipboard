@@ -30,6 +30,9 @@ namespace FileOpenerformClipboard
                 //空行を削除
                 .Where(x => x != "");
 
+            System.Diagnostics.Debug.WriteLine("{0} file paths.",
+                clipboardStrings.FilePathBuilder().Count());
+
             var hitPath = clipboardStrings
                 // ファイルパスを再帰的に構築
                 .FilePathBuilder()
