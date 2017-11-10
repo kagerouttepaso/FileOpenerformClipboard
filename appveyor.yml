@@ -13,11 +13,20 @@ install:
 build:
   project: FileOpenerformClipboard.sln
   verbosity: minimal
+after_build:
+- cmd: >-
+    mkdir Release
+
+    cd Release
+
+    mkdir FileOpenerformClipboard
+
+    copy ..\FileOpenerFromClipboardGui\bin\Release\FileOpenerformClipboard.dll FileOpenerformClipboard
+
+    copy ..\FileOpenerFromClipboardGui\bin\Release\FileOpenerFromClipboardGui.exe FileOpenerformClipboard
 artifacts:
-- path: FileOpenerFromClipboardGui\bin\Release\*.exe
-  name: exe
-- path: FileOpenerFromClipboardGui\bin\Release\*.dll
-  name: dll
+- path: Release
+  name: release
 deploy:
 - provider: GitHub
   tag: FileOpnerFromClipBoard-v$(appveyor_build_version)
@@ -25,7 +34,7 @@ deploy:
   description: auto build
   auth_token:
     secure: c8dDXg/WHIulAFj/46zWb0bo3rLqir6l3DH8uHZas4yB+mxvBQBjLeTi9EFmxswZ
-  artifact: /.*\.(exe|dll)/
+  artifact: /.*Release\.zip/
   draft: false
   prerelease: false
   force_update: true
