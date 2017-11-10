@@ -24,7 +24,8 @@ namespace FileOpenerformClipboard.Search
             {
                 return ClipboardString
                 //改行コード変更後
-                .Replace("\r", "")
+                .Replace("\r\n", "\n")
+                .Replace("\r", "\n")
                 .Split('\n')
                 //各行頭の空白文字とおせっかいな行末の\を削除
                 .Select(x => Regex.Replace(x.Trim(), @"^(.*?)[\\]?$", "$1"))
