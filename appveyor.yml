@@ -14,9 +14,9 @@ build:
   project: FileOpenerformClipboard.sln
   verbosity: minimal
 artifacts:
-- path: C:\work\git\FileOpenerformClipboard\FileOpenerFromClipboardGui\bin\Release\*.exe
+- path: FileOpenerFromClipboardGui\bin\Release\*.exe
   name: exe
-- path: C:\work\git\FileOpenerformClipboard\FileOpenerFromClipboardGui\bin\Release\*.dll
+- path: FileOpenerFromClipboardGui\bin\Release\*.dll
   name: dll
 deploy:
 - provider: GitHub
