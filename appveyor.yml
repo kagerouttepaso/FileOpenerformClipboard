@@ -1,10 +1,13 @@
-version: 1.0.1.{build}
+version: 1.0.0.{build}
 skip_tags: true
+image: Visual Studio 2017
 configuration: Release
 platform: Any CPU
 install:
-- git submodule init
-- git submodule update
+- cmd: >-
+    git submodule init
+
+    git submodule update
 build:
   project: FileOpenerformClipboard.sln
   verbosity: minimal
@@ -13,9 +16,9 @@ artifacts:
   name: FileOpenerFromClipboard_Stable
 deploy:
 - provider: GitHub
-  tag: FileOpenerFromClipboard-v$(appveyor_build_version)
-  release: FileOpenerFromClipboard-v$(appveyor_build_version)
-  description: Release時の説明
+  tag: FileOpnerFromClipBoard-v$(appveyor_build_version)
+  release: FileOpnerFromClipBoard-v$(appveyor_build_version)
+  description: description
   auth_token:
     secure: FZGlOzjXOlI70ZNfll82No7ADk6X0UClnOhb3xoiRm9UEnTpFI3L3zDfNNdW357L
   artifact: FileOpenerformClipboard\bin\Release\FileOpenerformClipboard.exe
