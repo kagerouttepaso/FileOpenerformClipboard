@@ -13,13 +13,11 @@ install:
 build:
   project: FileOpenerformClipboard.sln
   verbosity: minimal
-before_deploy:
-- cmd: >-
-    cd FileOpenerFromClipboardGui\bin\Release
-
-    del *.pdb
-
-    del *.config
+artifacts:
+- path: C:\work\git\FileOpenerformClipboard\FileOpenerFromClipboardGui\bin\Release\*.exe
+  name: exe
+- path: C:\work\git\FileOpenerformClipboard\FileOpenerFromClipboardGui\bin\Release\*.dll
+  name: dll
 deploy:
 - provider: GitHub
   tag: FileOpnerFromClipBoard-v$(appveyor_build_version)
