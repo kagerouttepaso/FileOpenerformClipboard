@@ -27,7 +27,7 @@ deploy:
   description: auto build
   auth_token:
     secure: c8dDXg/WHIulAFj/46zWb0bo3rLqir6l3DH8uHZas4yB+mxvBQBjLeTi9EFmxswZ
-  artifact: FileOpenerFromClipboardGui\bin\Release\
+  artifact: /.*\.(exe|dll)/
   draft: false
   prerelease: false
   force_update: true
