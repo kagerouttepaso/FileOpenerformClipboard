@@ -13,6 +13,9 @@ install:
 build:
   project: FileOpenerformClipboard.sln
   verbosity: minimal
+environment:
+  my_variable:
+    secure: qEv5iHVZK0V/0q9qxwIYPLnUtBX8bfcoJihFcBStuEVn50HCyHlo/4kguQ1cYxUW
 artifacts:
 - path: FileOpenerformClipboard\bin\Release\FileOpenerformClipboard.exe
   name: FileOpenerFromClipboard_Stable
