@@ -1,28 +1,46 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 14 for Windows Desktop
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileOpenerformClipboard", "FileOpenerformClipboard\FileOpenerformClipboard.csproj", "{E048A722-0A61-4D94-BE10-C594C21C95EA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileOpenerformClipboard", "FileOpenerformClipboard\FileOpenerformClipboard.csproj", "{D1F1A644-76F8-41BA-9FE9-C4C0D2CD5461}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileOpenerformClipboardTests", "FileOpenerformClipboardTests\FileOpenerformClipboardTests.csproj", "{AB1E65F7-32AA-423C-A368-66714B3A34CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileOpenerFromClipboardGui", "FileOpenerFromClipboardGui\FileOpenerFromClipboardGui.csproj", "{187F29FE-A8FB-4CDB-8D55-0FA435D29A9A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileOpenerformClipboardCui", "FileOpenerformClipboardCui\FileOpenerformClipboardCui.csproj", "{6C4CFADD-255E-4D28-BD6D-F87D7CDAE351}"
 EndProject
 Global
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
-		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
-		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E048A722-0A61-4D94-BE10-C594C21C95EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E048A722-0A61-4D94-BE10-C594C21C95EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E048A722-0A61-4D94-BE10-C594C21C95EA}.Debug|x86.ActiveCfg = Debug|x86
-		{E048A722-0A61-4D94-BE10-C594C21C95EA}.Debug|x86.Build.0 = Debug|x86
-		{E048A722-0A61-4D94-BE10-C594C21C95EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E048A722-0A61-4D94-BE10-C594C21C95EA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E048A722-0A61-4D94-BE10-C594C21C95EA}.Release|x86.ActiveCfg = Release|x86
-		{E048A722-0A61-4D94-BE10-C594C21C95EA}.Release|x86.Build.0 = Release|x86
+		{D1F1A644-76F8-41BA-9FE9-C4C0D2CD5461}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1F1A644-76F8-41BA-9FE9-C4C0D2CD5461}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1F1A644-76F8-41BA-9FE9-C4C0D2CD5461}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1F1A644-76F8-41BA-9FE9-C4C0D2CD5461}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB1E65F7-32AA-423C-A368-66714B3A34CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB1E65F7-32AA-423C-A368-66714B3A34CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB1E65F7-32AA-423C-A368-66714B3A34CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB1E65F7-32AA-423C-A368-66714B3A34CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{187F29FE-A8FB-4CDB-8D55-0FA435D29A9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{187F29FE-A8FB-4CDB-8D55-0FA435D29A9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{187F29FE-A8FB-4CDB-8D55-0FA435D29A9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{187F29FE-A8FB-4CDB-8D55-0FA435D29A9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C4CFADD-255E-4D28-BD6D-F87D7CDAE351}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C4CFADD-255E-4D28-BD6D-F87D7CDAE351}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C4CFADD-255E-4D28-BD6D-F87D7CDAE351}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C4CFADD-255E-4D28-BD6D-F87D7CDAE351}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AA3FC643-C405-4F93-B9EC-7164474D5E70}
 	EndGlobalSection
 EndGlobal

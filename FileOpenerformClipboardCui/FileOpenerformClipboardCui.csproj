@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D1F1A644-76F8-41BA-9FE9-C4C0D2CD5461}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>FileOpenerformClipboard</RootNamespace>
-    <AssemblyName>FileOpenerformClipboard</AssemblyName>
+    <ProjectGuid>{6C4CFADD-255E-4D28-BD6D-F87D7CDAE351}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>FileOpenerformClipboardCui</RootNamespace>
+    <AssemblyName>FileOpenerformClipboardCui</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -28,22 +28,20 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject />
+    <ApplicationIcon>Untitled.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Untitled.ico</ApplicationIcon>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -52,13 +50,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helper\ClipboardHelper.cs" />
-    <Compile Include="Helper\Extentions.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Search\Searcher.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FileOpenerformClipboard\FileOpenerformClipboard.csproj">
+      <Project>{d1f1a644-76f8-41ba-9fe9-c4c0d2cd5461}</Project>
+      <Name>FileOpenerformClipboard</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Untitled.ico" />

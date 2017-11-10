@@ -1,25 +1,42 @@
-version: 1.0.1.{build}
+version: 1.0.0.{build}
 skip_tags: true
+image: Visual Studio 2017
 configuration: Release
-platform: x86
+platform: Any CPU
 install:
-- git submodule init
-- git submodule update
+- cmd: >-
+    git submodule init
+
+    git submodule update
+
+    nuget restore
 build:
   project: FileOpenerformClipboard.sln
   verbosity: minimal
+after_build:
+- cmd: >-
+    mkdir Release
+
+    cd Release
+
+    mkdir FileOpenerformClipboard
+
+    copy ..\FileOpenerFromClipboardGui\bin\Release\FileOpenerformClipboard.dll FileOpenerformClipboard
+
+    copy ..\FileOpenerFromClipboardGui\bin\Release\FileOpenerFromClipboardGui.exe FileOpenerformClipboard
 artifacts:
-- path: FileOpenerformClipboard\bin\Release\FileOpenerformClipboard.exe
-  name: FileOpenerFromClipboard_Stable
+- path: Release
+  name: release
 deploy:
 - provider: GitHub
-  tag: FileOpenerFromClipboard-v$(appveyor_build_version)
-  release: FileOpenerFromClipboard-v$(appveyor_build_version)
-  description: Release時の説明
+  tag: FileOpnerFromClipBoard-v$(appveyor_build_version)
+  release: FileOpnerFromClipBoard-v$(appveyor_build_version)
+  description: auto build
   auth_token:
-    secure: FZGlOzjXOlI70ZNfll82No7ADk6X0UClnOhb3xoiRm9UEnTpFI3L3zDfNNdW357L
-  artifact: FileOpenerformClipboard\bin\Release\FileOpenerformClipboard.exe
+    secure: c8dDXg/WHIulAFj/46zWb0bo3rLqir6l3DH8uHZas4yB+mxvBQBjLeTi9EFmxswZ
+  artifact: /.*Release\.zip/
   draft: false
   prerelease: false
+  force_update: true
   on:
     branch: /master/

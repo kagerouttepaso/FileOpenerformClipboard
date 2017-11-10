@@ -45,10 +45,6 @@ invalid text
 subfolder\subfolder2
 filename.cpp
 invalied string
-```
 
-## 注意
-ファイルパスの解析アルゴリズムがヘボいので、
-あまり大きな行数をコピーすると加速度的にメモリを食います。  
-15行行くらいまでなら60MB程度ですみますが、
-18行目で550MB、20行では1.3GBほどメモリを食い出します。
+-> open \\server\folder\subfolder\subfolder2\filename.cpp
+```
