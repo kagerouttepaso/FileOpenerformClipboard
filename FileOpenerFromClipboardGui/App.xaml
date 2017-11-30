@@ -4,6 +4,5 @@
              xmlns:local="clr-namespace:FileOpenerFromClipboardGui"
              StartupUri="MainWindowView.xaml">
     <Application.Resources>
-         
     </Application.Resources>
 </Application>

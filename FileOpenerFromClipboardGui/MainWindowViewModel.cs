@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using FileOpenerformClipboard.Helper;
+using FileOpenerformClipboard.Search;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-
-using FileOpenerformClipboard.Helper;
-using FileOpenerformClipboard.Search;
 
 namespace FileOpenerFromClipboardGui
 {
@@ -27,10 +23,8 @@ namespace FileOpenerFromClipboardGui
         /// 進捗
         /// </summary>
         public double Progress { get; set; }
-        
 
         public event PropertyChangedEventHandler PropertyChanged;
-
 
         public MainWindowViewModel()
         {
@@ -55,7 +49,7 @@ namespace FileOpenerFromClipboardGui
             var Searcher = new Searcher(clipboardString);
 
             Debug.WriteLine("search {0} file paths", Searcher.CandidatesSize);
-            
+
             //検索開始
             var hitPath = Searcher.GetValidPathAsync();
 
@@ -94,6 +88,7 @@ namespace FileOpenerFromClipboardGui
         }
 
         public bool CanExecute(object parameter) => canExecute();
+
         public void Execute(object parameter) => execute();
     }
 }

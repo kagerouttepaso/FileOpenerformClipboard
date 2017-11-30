@@ -1,21 +1,20 @@
-﻿using System;
+﻿using FileOpenerformClipboard.Helper;
+using FileOpenerformClipboard.Search;
 using System.Diagnostics;
 using System.Threading;
-using FileOpenerformClipboard.Helper;
-using FileOpenerformClipboard.Search;
 
 namespace FileOpenerformClipboardCui
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var clipboardString = ClipboardHelper.Instance.GetText();
             if (clipboardString == null) return;
 
             var Searcher = new Searcher(clipboardString);
 
-            Debug.WriteLine("search {0} file paths",Searcher.CandidatesSize);
+            Debug.WriteLine("search {0} file paths", Searcher.CandidatesSize);
 
             var hitPath = Searcher.GetValidPathAsync();
             while (!hitPath.IsCompleted)
@@ -23,7 +22,7 @@ namespace FileOpenerformClipboardCui
                 Debug.WriteLine(Searcher.Progress.ToString("##.0%"));
                 Thread.Sleep(500);
             }
-            
+
             //ヒットしていれば開く
             if (hitPath.Result == null) return;
             Process.Start(hitPath.Result);
