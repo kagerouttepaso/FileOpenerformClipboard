@@ -16,7 +16,7 @@ namespace FileOpenerformClipboard.Helper
         /// <returns></returns>
         public static bool IsUrl(this string _this)
         {
-            return Regex.IsMatch(_this, @"^[\s]*(http|https|ftp)://.*");
+            return Regex.IsMatch(_this, @"\As?https?://[-_.!~*'()a-zA-Z0-9;/?:@&=+$,%#]+\z");
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace FileOpenerformClipboard.Helper
             var nowString = istrings.FirstOrDefault();
             if (nowString == null) yield break;
 
-            foreach (var filePath in JointTailStrings(istrings, new string[]{ "", "\\" }))
+            foreach (var filePath in JointTailStrings(istrings, new string[] { "", "\\" }))
             {
                 yield return filePath;
             }
@@ -50,9 +50,9 @@ namespace FileOpenerformClipboard.Helper
             if (nowLineString == null) yield break;
 
             yield return nowLineString;
-            foreach (var tailString in JointTailStrings(stringList.Skip(1),separators))
+            foreach (var tailString in JointTailStrings(stringList.Skip(1), separators))
             {
-                foreach(var separator in separators)
+                foreach (var separator in separators)
                 {
                     yield return string.Format("{0}{1}{2}",
                         nowLineString,
@@ -61,6 +61,5 @@ namespace FileOpenerformClipboard.Helper
                 }
             }
         }
-
     }
 }
