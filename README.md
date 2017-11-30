@@ -13,20 +13,20 @@ FileOpenerformClipboard
 
 ### 開けるリンクの例
 
-URLとか
+**URLとか**
 
 ```
 http://google.com
 https://google.com
 ```
 
-サーバー上のfolderとか
+**サーバー上のfolderとか**
 
 ```
 \\server\folder
 ```
 
-複数行で記述されたファイルとか
+**複数行で記述されたファイルとか**
 
 ```
 ex1)
@@ -38,14 +38,33 @@ ex2)
 filename.cpp
 ```
 
-前後に関係ない文字列があってもファイルが開ける
+**ファイルパスが装飾されていても大丈夫(Windowsのファイルパスに使えない記号に限る)**
 
 ```
-invalid text
-\\server\folder\
-subfolder\subfolder2
+ex1)
+  * \\server\folder\filename.cpp 
+```
+→ Open `\\server\folder\filename.cpp`
+
+```
+ex2)
+  < \\server\folder\
+filename.cpp >
+```
+→ Open `\\server\folder\filename.cpp`
+
+
+**前後に関係ない文字列があってもファイルが開ける**
+
+```
+ex)
+ファイルパスをお送りします。
+\\Localserver\folder\sub folder\sub_fol
+der2\longlongforlder
+
 filename.cpp
-invalied string
 
--> open \\server\folder\subfolder\subfolder2\filename.cpp
+以上よろしくお願いいたします。
 ```
+
+-> Open `\\Localserver\folder\sub folder\sub_folder2\longlongforlder\filename.cpp`
