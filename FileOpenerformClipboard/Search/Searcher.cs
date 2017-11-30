@@ -1,15 +1,30 @@
-﻿using System.Collections.Generic;
+﻿using FileOpenerformClipboard.Helper;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using FileOpenerformClipboard.Helper;
 
 namespace FileOpenerformClipboard.Search
 {
     public class Searcher
     {
+        /// <summary>
+        /// Windowsのファイルパスで許されないもの
+        /// </summary>
+        private static IReadOnlyList<char> invalidCharsWindowsPath = new List<char>
+                {
+                    '\\',
+                    '/',
+                    ':',
+                    '*',
+                    // '?', URLで使われているので許す
+                    '"',
+                    '<',
+                    '>',
+                    '|'
+                }.AsReadOnly();
+
         /// <summary>
         /// クリップボードから受け取った文字列
         /// </summary>
@@ -22,13 +37,31 @@ namespace FileOpenerformClipboard.Search
         {
             get
             {
+                var icPre = invalidCharsWindowsPath
+                    .Where(x => x != '\\')
+                    .ToArray();
+                var icPost = invalidCharsWindowsPath
+                    .ToArray();
+
+                // 行両端の無効文字を削除するメソッド
+                // 単純に空白だけでなく、下記のURLのような
+                // 両側にファイルパスに使えない記号で修飾された文字も削除する
+                // __<__URL__>
+                string trimMethod(string str)
+                {
+                    var t = str.Trim().TrimStart(icPre).TrimEnd(icPost);
+                    return t.Length == str.Length ?
+                        t :
+                        trimMethod(t);
+                }
+
                 return ClipboardString
                 //改行コード変更後
                 .Replace("\r\n", "\n")
                 .Replace("\r", "\n")
                 .Split('\n')
-                //各行頭の空白文字とおせっかいな行末の\を削除
-                .Select(x => Regex.Replace(x.Trim(), @"^(.*?)[\\]?$", "$1"))
+                //各行の空白文字とおせっかいな行末の\を削除
+                .Select(x => trimMethod(x))
                 //空行を削除
                 .Where(x => x != string.Empty)
                 //候補リスト構築
@@ -47,6 +80,7 @@ namespace FileOpenerformClipboard.Search
                 return _canditatesSize;
             }
         }
+
         private int _canditatesSize = -1;
 
         /// <summary>
@@ -67,6 +101,7 @@ namespace FileOpenerformClipboard.Search
             get => _isProsess == 1;
             set => Interlocked.Exchange(ref _isProsess, value ? 1 : 0);
         }
+
         private int _isProsess;
 
         /// <summary>

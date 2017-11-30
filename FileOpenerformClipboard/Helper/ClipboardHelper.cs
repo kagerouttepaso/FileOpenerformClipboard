@@ -23,6 +23,8 @@ namespace FileOpenerformClipboard.Helper
         }
 
         public static ClipboardHelper Instance { get; } = new ClipboardHelper();
-        ClipboardHelper() { }
+
+        private ClipboardHelper()
+        { }
     }
 }
