@@ -30,7 +30,7 @@ namespace FileOpenerformClipboard.Search
                 //各行頭の空白文字とおせっかいな行末の\を削除
                 .Select(x => Regex.Replace(x.Trim(), @"^(.*?)[\\]?$", "$1"))
                 //空行を削除
-                .Where(x => x != "")
+                .Where(x => x != string.Empty)
                 //候補リスト構築
                 .FilePathBuilder();
             }
@@ -81,7 +81,7 @@ namespace FileOpenerformClipboard.Search
         /// <summary>
         /// 有効なパス検索
         /// </summary>
-        /// <returns></returns>
+        /// <returns>最も文字数の多い有効なパス</returns>
         public async Task<string> GetValidPathAsync()
         {
             IsProsess = true;
@@ -90,16 +90,19 @@ namespace FileOpenerformClipboard.Search
              {
                  Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
                  var result = Candidates
-                    // あたりは1つであることを想定しているため並列検索
+                    // 並列検索
                     .AsParallel()
-                    // ファイルパスまたはURLなものを検索
-                    .FirstOrDefault(x =>
+                    // 有効なファイルパスまたはURLなものを検索
+                    .Where(x =>
                     {
                         Interlocked.Increment(ref nowCount);
                         return Directory.Exists(x) ||
                         File.Exists(x) ||
                         x.IsUrl();
-                    });
+                    })
+                    // 最も長いパスを返す
+                    .OrderByDescending(x => x.Count())
+                    .FirstOrDefault();
                  IsProsess = false;
                  return result;
              });
