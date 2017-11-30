@@ -16,7 +16,7 @@ namespace FileOpenerformClipboard.Helper
         /// <returns></returns>
         public static bool IsUrl(this string _this)
         {
-            return Regex.IsMatch(_this, @"^[\s]*(http|https|ftp)://.*");
+            return Regex.IsMatch(_this, @"\As?https?://[-_.!~*'()a-zA-Z0-9;/?:@&=+$,%#]+\z");
         }
 
         /// <summary>
