@@ -1,34 +1,35 @@
-FileOpenerformClipboard
-=======================
+# FileOpenerformClipboard
+
 [![Build status](https://ci.appveyor.com/api/projects/status/j2nm6tb7cd02gbeq?svg=true)](https://ci.appveyor.com/project/kagerouttepaso/fileopenerformclipboard)
 
 ## ダウンロード
+
 [Release](https://github.com/kagerouttepaso/FileOpenerformClipboard/releases)からダウンロードできます。
 
 ## 使い方
 
 1. リンクをコピーする
-2. アプリケーションを起動する
-3. 複数行に渡るリンク文字列を検索し、最もそれらしいリンクを規定のアプリケーションで開きます
+1. アプリケーションを起動する
+1. 複数行に渡るリンク文字列を検索し、最もそれらしいリンクを規定のアプリケーションで開きます
 
 ### 開けるリンクの例
 
-**URLとか**
+#### URLとか
 
-```
+``` text
 http://google.com
 https://google.com
 ```
 
-**サーバー上のfolderとか**
+#### サーバー上のfolderとか
 
-```
+``` text
 \\server\folder
 ```
 
-**複数行で記述されたファイルとか**
+#### 複数行で記述されたファイルとか
 
-```
+``` text
 ex1)
 \\server\folder
 filename.cpp
@@ -38,25 +39,26 @@ ex2)
 filename.cpp
 ```
 
-**ファイルパスが装飾されていても大丈夫(Windowsのファイルパスに使えない記号に限る)**
+#### ファイルパスが装飾されていても大丈夫(Windowsのファイルパスに使えない記号に限る)
 
-```
+``` text
 ex1)
-  * \\server\folder\filename.cpp 
+  * \\server\folder\filename.cpp
 ```
+
 → Open `\\server\folder\filename.cpp`
 
-```
+``` text
 ex2)
   < \\server\folder\
 filename.cpp >
 ```
+
 → Open `\\server\folder\filename.cpp`
 
+#### 前後に関係ない文字列があってもファイルが開ける
 
-**前後に関係ない文字列があってもファイルが開ける**
-
-```
+``` text
 ex)
 ファイルパスをお送りします。
 \\Localserver\folder\sub folder\sub_fol
