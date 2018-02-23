@@ -15,42 +15,51 @@ namespace FileOpenerformClipboard.Helper
         /// <param name="_this"></param>
         /// <returns></returns>
         public static bool IsUrl(this string _this)
+            => IsUrlRegex.IsMatch(_this);
+
+        private static Regex IsUrlRegex { get; } = new Regex(@"\As?https?://[-_.!~*'()a-zA-Z0-9;/?:@&=+$,%#]+\z", RegexOptions.Compiled);
+
+        public static bool IsFilePath(this string _this) => IsFilePathRegexs.Any(r => r.IsMatch(_this));
+
+        private static Regex[] IsFilePathRegexs { get; } = new Regex[]
         {
-            return Regex.IsMatch(_this, @"\As?https?://[-_.!~*'()a-zA-Z0-9;/?:@&=+$,%#]+\z");
-        }
+            new Regex(@"^[a-z]:", RegexOptions.Compiled|RegexOptions.IgnoreCase),
+            new Regex(@"^\\\\",RegexOptions.Compiled),
+        };
 
         /// <summary>
         /// ファイルパスを再帰的に構築
         /// </summary>
-        /// <param name="istrings"></param>
+        /// <param name="strings"></param>
         /// <returns></returns>
-        public static IEnumerable<string> FilePathBuilder(this IEnumerable<string> istrings)
+        public static IEnumerable<string> FilePathBuilder(this IEnumerable<string> strings)
         {
-            var nowString = istrings.FirstOrDefault();
+            var nowString = strings.FirstOrDefault();
             if (nowString == null) yield break;
 
-            foreach (var filePath in JointTailStrings(istrings, new string[] { "", "\\" }))
+            foreach (var filePath in strings.JointTailStrings(JoinSeparators))
             {
                 yield return filePath;
-            }
-            foreach (var next in FilePathBuilder(istrings.Skip(1)))
-            {
-                yield return next;
             }
         }
 
         /// <summary>
+        /// ファイルパス構築時につなぎに使うセパレータ
+        /// </summary>
+        public static IList<string> JoinSeparators { get; } = new string[] { "", "\\", " " };
+
+        /// <summary>
         /// 後ろの文字列を再帰的に繋げる
         /// </summary>
-        /// <param name="stringList"></param>
+        /// <param name="strings"></param>
         /// <returns></returns>
-        public static IEnumerable<string> JointTailStrings(this IEnumerable<string> stringList, IEnumerable<string> separators)
+        public static IEnumerable<string> JointTailStrings(this IEnumerable<string> strings, IEnumerable<string> separators)
         {
-            var nowLineString = stringList.FirstOrDefault();
+            var nowLineString = strings.FirstOrDefault();
             if (nowLineString == null) yield break;
 
             yield return nowLineString;
-            foreach (var tailString in JointTailStrings(stringList.Skip(1), separators))
+            foreach (var tailString in strings.Skip(1).JointTailStrings(separators))
             {
                 foreach (var separator in separators)
                 {
