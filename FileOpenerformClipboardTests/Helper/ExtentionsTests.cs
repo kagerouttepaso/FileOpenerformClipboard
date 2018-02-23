@@ -65,7 +65,7 @@ namespace FileOpenerformClipboard.Helper.Tests
                 .Select(x => x.ToString())
                 .FilePathBuilder()
                 .ToArray();
-            Assert.AreEqual(18, filePathQuery.Length);
+            Assert.AreEqual(13, filePathQuery.Length);
             var results = new List<string>
             {
                 @"0",
