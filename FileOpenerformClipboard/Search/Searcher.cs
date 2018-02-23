@@ -1,4 +1,5 @@
 ﻿using FileOpenerformClipboard.Helper;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -26,14 +27,17 @@ namespace FileOpenerformClipboard.Search
                 }.AsReadOnly();
 
         /// <summary>
+        /// くっ付ける行数
+        /// 5行より多く分割する人はめったにいないはず
+        /// </summary>
+        private static int SearchLines => 5;
+
+        /// <summary>
         /// クリップボードから受け取った文字列
         /// </summary>
         private string ClipboardString { get; set; }
 
-        /// <summary>
-        /// 候補リスト
-        /// </summary>
-        private IEnumerable<string> Candidates
+        private IEnumerable<string> Strings
         {
             get
             {
@@ -63,25 +67,40 @@ namespace FileOpenerformClipboard.Search
                 //各行の空白文字とおせっかいな行末の\を削除
                 .Select(x => trimMethod(x))
                 //空行を削除
-                .Where(x => x != string.Empty)
-                //候補リスト構築
-                .FilePathBuilder();
+                .Where(x => x != string.Empty);
+            }
+        }
+
+        private IEnumerable<IEnumerable<string>> SearchStringList
+        {
+            get
+            {
+                var indexs = Strings
+                    .Select((x, i) => new { i, x })
+                    .Where(x => x.x.IsUrl() || x.x.IsFilePath()) // 少なくとも連結する行先頭はフォーマットが正しいはず
+                    .Select(x => x.i)
+                    .ToArray();
+
+                // フォーマットの正しい行から5行分ずつ文字列を取り出す
+                return indexs.Select(i => Strings.Skip(i).Take(SearchLines));
             }
         }
 
         /// <summary>
         /// 候補数
         /// </summary>
-        public int CandidatesSize
+        public long CandidatesSize
         {
             get
             {
-                if (_canditatesSize == -1) _canditatesSize = Candidates.Count();
+                if (_canditatesSize == -1) _canditatesSize = SearchStringList
+                        .SelectMany(x => x.FilePathBuilder())
+                        .LongCount();
                 return _canditatesSize;
             }
         }
 
-        private int _canditatesSize = -1;
+        private long _canditatesSize = -1;
 
         /// <summary>
         /// 進捗
@@ -121,19 +140,28 @@ namespace FileOpenerformClipboard.Search
         {
             IsProsess = true;
             nowCount = 0;
-            return await Task.Factory.StartNew(() =>
+            return await Task.Run(() =>
              {
                  Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
-                 var result = Candidates
+                 var result = SearchStringList.SelectMany(x => x.FilePathBuilder())
                     // 並列検索
                     .AsParallel()
                     // 有効なファイルパスまたはURLなものを検索
                     .Where(x =>
                     {
                         Interlocked.Increment(ref nowCount);
-                        return Directory.Exists(x) ||
-                        File.Exists(x) ||
-                        x.IsUrl();
+                        if (Directory.Exists(x) || File.Exists(x))
+                        {
+                            return true;
+                        }
+                        else if (x.IsUrl())
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
                     })
                     // 最も長いパスを返す
                     .OrderByDescending(x => x.Count())

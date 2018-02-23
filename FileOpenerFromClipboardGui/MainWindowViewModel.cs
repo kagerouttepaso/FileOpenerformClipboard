@@ -54,14 +54,14 @@ namespace FileOpenerFromClipboardGui
             var hitPath = Searcher.GetValidPathAsync();
 
             // 検索中のプログレスバー更新
-            await Task.Factory.StartNew(() =>
+            await Task.Run(async () =>
             {
                 while (!hitPath.IsCompleted)
                 {
                     Debug.WriteLine(Searcher.Progress.ToString("##.0%"));
                     Progress = Searcher.Progress * 100;
                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Progress)));
-                    Thread.Sleep(15); // = 60fps
+                    await Task.Delay(15); // = 60fps
                 }
             });
 
