@@ -24,25 +24,39 @@ namespace FileOpenerformClipboard.Search
                     '<',
                     '>',
                     '|'
-                }.AsReadOnly();
+                };
 
         /// <summary>
         /// くっ付ける行数
         /// 5行より多く分割する人はめったにいないはず
         /// </summary>
-        private static int SearchLines => 5;
+        private static int ConcatLineSize { get; } = 5;
 
         /// <summary>
         /// クリップボードから受け取った文字列
         /// </summary>
-        private string ClipboardString { get; set; }
+        private string ClipboardString
+        {
+            get => _clipboardString;
+            set
+            {
+                if(_clipboardString == value) return;
+                _clipboardString = value;
+                _canditatesSize = null;
+            }
+        }
 
-        private IEnumerable<string> Strings
+        private string _clipboardString = default(string);
+
+        /// <summary>
+        /// いい感じに整形した行コレクション
+        /// </summary>
+        private IEnumerable<string> StringElements
         {
             get
             {
                 var icPre = invalidCharsWindowsPath
-                    .Where(x => x != '\\')
+                    .Where(x => x != '\\') // ネットワーク上のファイルは\\から始まるので除外
                     .ToArray();
                 var icPost = invalidCharsWindowsPath
                     .ToArray();
@@ -54,6 +68,7 @@ namespace FileOpenerformClipboard.Search
                 string trimMethod(string str)
                 {
                     var t = str.Trim().TrimStart(icPre).TrimEnd(icPost);
+                    // 除去する文字がなくなるまで再帰する
                     return t.Length == str.Length ?
                         t :
                         trimMethod(t);
@@ -64,25 +79,28 @@ namespace FileOpenerformClipboard.Search
                 .Replace("\r\n", "\n")
                 .Replace("\r", "\n")
                 .Split('\n')
-                //各行の空白文字とおせっかいな行末の\を削除
+                //各行の装飾を削除
                 .Select(x => trimMethod(x))
                 //空行を削除
                 .Where(x => x != string.Empty);
             }
         }
 
+        /// <summary>
+        /// 検索用の行コレクションのコレクション
+        /// </summary>
         private IEnumerable<IEnumerable<string>> SearchStringList
         {
             get
             {
-                var indexs = Strings
-                    .Select((x, i) => new { i, x })
-                    .Where(x => x.x.IsUrl() || x.x.IsFilePath()) // 少なくとも連結する行先頭はフォーマットが正しいはず
-                    .Select(x => x.i)
+                var indexs = StringElements
+                    .Select((row, index) => new { index, row })
+                    .Where(x => x.row.IsUrl() || x.row.IsFilePath()) // 少なくとも連結する行先頭はフォーマットが正しいはず
+                    .Select(x => x.index)
                     .ToArray();
 
                 // フォーマットの正しい行から5行分ずつ文字列を取り出す
-                return indexs.Select(i => Strings.Skip(i).Take(SearchLines));
+                return indexs.Select(i => StringElements.Skip(i).Take(ConcatLineSize));
             }
         }
 
@@ -93,14 +111,17 @@ namespace FileOpenerformClipboard.Search
         {
             get
             {
-                if (_canditatesSize == -1) _canditatesSize = SearchStringList
+                if(!_canditatesSize.HasValue)
+                {
+                    _canditatesSize = SearchStringList
                         .SelectMany(x => x.FilePathBuilder())
                         .LongCount();
-                return _canditatesSize;
+                }
+                return _canditatesSize.Value;
             }
         }
 
-        private long _canditatesSize = -1;
+        private long? _canditatesSize = null;
 
         /// <summary>
         /// 進捗
@@ -150,11 +171,11 @@ namespace FileOpenerformClipboard.Search
                     .Where(x =>
                     {
                         Interlocked.Increment(ref nowCount);
-                        if (Directory.Exists(x) || File.Exists(x))
+                        if(Directory.Exists(x) || File.Exists(x))
                         {
                             return true;
                         }
-                        else if (x.IsUrl())
+                        else if(x.IsUrl())
                         {
                             return true;
                         }

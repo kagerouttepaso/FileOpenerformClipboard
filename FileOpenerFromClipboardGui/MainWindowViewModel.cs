@@ -43,7 +43,7 @@ namespace FileOpenerFromClipboardGui
         {
             //文字列読み取り
             var clipboardString = ClipboardHelper.Instance.GetText();
-            if (clipboardString == null) return;
+            if(clipboardString == null) return;
 
             // 検索クラス生成
             var Searcher = new Searcher(clipboardString);
@@ -56,18 +56,20 @@ namespace FileOpenerFromClipboardGui
             // 検索中のプログレスバー更新
             await Task.Run(async () =>
             {
-                while (!hitPath.IsCompleted)
+                var waitTime = TimeSpan.FromSeconds(1.0 / 60);
+                while(!hitPath.IsCompleted)
                 {
                     Debug.WriteLine(Searcher.Progress.ToString("##.0%"));
                     Progress = Searcher.Progress * 100;
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Progress)));
-                    await Task.Delay(15); // = 60fps
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Progress)));
+                    await Task.Delay(waitTime); // = 60fps
                 }
             });
 
             //ヒットしていれば開く
-            if (hitPath.Result == null) return;
-            Process.Start(hitPath.Result);
+            var result = await hitPath;
+            if(result == null) return;
+            Process.Start(result);
         }
     }
 
