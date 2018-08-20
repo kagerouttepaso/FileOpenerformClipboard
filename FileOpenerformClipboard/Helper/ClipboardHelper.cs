@@ -13,7 +13,7 @@ namespace FileOpenerformClipboard.Helper
                 var clipboardObject = Clipboard.GetDataObject();
 
                 //文字列の取得、出来なかったら終了
-                if (!clipboardObject.GetDataPresent(DataFormats.Text)) return;
+                if(!clipboardObject.GetDataPresent(DataFormats.Text)) return;
                 clipboardString = clipboardObject.GetData(DataFormats.Text) as string;
             });
             t.SetApartmentState(System.Threading.ApartmentState.STA);
