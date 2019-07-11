@@ -32,6 +32,17 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
+- task: CmdLine@2
+  inputs:
+    script: |
+      echo Write your commands here
+      
+      del *.config
+      del *.pdb
+      del *.application
+      del *.manifest
+    workingDirectory: '$(Build.SourcesDirectory)\FileOpenerFromClipboardGui\bin\Release'
+
 - task: ArchiveFiles@2
   inputs:
     rootFolderOrFile: '$(Build.SourcesDirectory)\FileOpenerFromClipboardGui\bin\Release'
@@ -40,4 +51,3 @@ steps:
     archiveFile: '$(Build.ArtifactStagingDirectory)/Release_$(Build.BuildId).zip'
     replaceExistingArchive: true
     verbose: true
-
