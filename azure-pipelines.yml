@@ -49,7 +49,7 @@ steps:
     rootFolderOrFile: '$(Build.SourcesDirectory)\FileOpenerFromClipboardGui\bin\Release'
     includeRootFolder: false
     archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.Projectname)-$(Build.Buildnumber).zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/FileOpenerformClipboard-$(Build.Buildnumber).zip'
     replaceExistingArchive: true
     verbose: true
 
