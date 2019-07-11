@@ -37,6 +37,6 @@ steps:
     rootFolderOrFile: '\FileOpenerFromClipboardGui\bin\Release'
     includeRootFolder: true
     archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/Release.zip'
     replaceExistingArchive: true
 
