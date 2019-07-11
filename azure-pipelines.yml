@@ -34,9 +34,10 @@ steps:
 
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: '\FileOpenerFromClipboardGui\bin\Release'
-    includeRootFolder: true
+    rootFolderOrFile: '$(Build.SourcesDirectory)\FileOpenerFromClipboardGui\bin\Release'
+    includeRootFolder: false
     archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/Release.zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/Release_$(Build.BuildId).zip'
     replaceExistingArchive: true
+    verbose: true
 
