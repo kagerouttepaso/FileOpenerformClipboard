@@ -1,8 +1,8 @@
-﻿<Application x:Class="FileOpenerFromClipboardGui.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:FileOpenerFromClipboardGui"
-             StartupUri="MainWindowView.xaml">
-    <Application.Resources>
-    </Application.Resources>
+﻿<Application
+    x:Class="FileOpenerFromClipboardGui.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:FileOpenerFromClipboardGui"
+    StartupUri="MainWindowView.xaml">
+    <Application.Resources />
 </Application>
