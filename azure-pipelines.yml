@@ -41,6 +41,7 @@ steps:
       del *.pdb
       del *.application
       del *.manifest
+      rmdir /q /s app.publish
     workingDirectory: '$(Build.SourcesDirectory)\FileOpenerFromClipboardGui\bin\Release'
 
 - task: ArchiveFiles@2
@@ -51,3 +52,9 @@ steps:
     archiveFile: '$(Build.ArtifactStagingDirectory)/Release_$(Build.BuildId).zip'
     replaceExistingArchive: true
     verbose: true
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'release App'
+    publishLocation: 'Container'
