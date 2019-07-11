@@ -1,6 +1,6 @@
 # FileOpenerformClipboard
 
-[![Build status](https://ci.appveyor.com/api/projects/status/j2nm6tb7cd02gbeq?svg=true)](https://ci.appveyor.com/project/kagerouttepaso/fileopenerformclipboard)
+[![Build Status](https://dev.azure.com/gothwasawasa/FileOpenerformClipboard/_apis/build/status/github_master?branchName=master)](https://dev.azure.com/gothwasawasa/FileOpenerformClipboard/_build/latest?definitionId=6&branchName=master)
 
 ## ダウンロード
 
