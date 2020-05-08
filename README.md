@@ -1,6 +1,7 @@
 # FileOpenerformClipboard
 
 [![Build Status](https://dev.azure.com/gothwasawasa/FileOpenerformClipboard/_apis/build/status/github_master?branchName=master)](https://dev.azure.com/gothwasawasa/FileOpenerformClipboard/_build/latest?definitionId=6&branchName=master)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fkagerouttepaso%2FFileOpenerformClipboard.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fkagerouttepaso%2FFileOpenerformClipboard?ref=badge_shield)
 
 ## ダウンロード
 
@@ -70,3 +71,7 @@ filename.cpp
 ```
 
 -> Open `\\Localserver\folder\sub folder\sub_folder2\longlongforlder\filename.cpp`
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fkagerouttepaso%2FFileOpenerformClipboard.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fkagerouttepaso%2FFileOpenerformClipboard?ref=badge_large)
