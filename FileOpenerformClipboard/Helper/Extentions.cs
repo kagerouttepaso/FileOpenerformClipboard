@@ -23,8 +23,8 @@ namespace FileOpenerformClipboard.Helper
 
         private static Regex[] IsFilePathRegexs { get; } = new Regex[]
         {
-            new Regex(@"^[a-z]:", RegexOptions.Compiled|RegexOptions.IgnoreCase),
-            new Regex(@"^\\\\",RegexOptions.Compiled),
+            new Regex(@"^[a-z]:", RegexOptions.Compiled|RegexOptions.IgnoreCase), // ドライブレター
+            new Regex(@"^\\\\",RegexOptions.Compiled), // ネットワークフォルダ
         };
 
         /// <summary>

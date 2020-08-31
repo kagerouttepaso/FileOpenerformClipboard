@@ -3,7 +3,6 @@ using FileOpenerformClipboard.Search;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -43,7 +42,7 @@ namespace FileOpenerFromClipboardGui
         {
             //文字列読み取り
             var clipboardString = ClipboardHelper.Instance.GetText();
-            if(clipboardString == null) return;
+            if (clipboardString == null) return;
 
             // 検索クラス生成
             var Searcher = new Searcher(clipboardString);
@@ -54,10 +53,10 @@ namespace FileOpenerFromClipboardGui
             var hitPath = Searcher.GetValidPathAsync();
 
             // 検索中のプログレスバー更新
-            await Task.Run(async () =>
+            var nonWait = Task.Run(async () =>
             {
                 var waitTime = TimeSpan.FromSeconds(1.0 / 60);
-                while(!hitPath.IsCompleted)
+                while (!hitPath.IsCompleted)
                 {
                     Debug.WriteLine(Searcher.Progress.ToString("##.0%"));
                     Progress = Searcher.Progress * 100;
@@ -68,7 +67,7 @@ namespace FileOpenerFromClipboardGui
 
             //ヒットしていれば開く
             var result = await hitPath;
-            if(result == null) return;
+            if (result == null) return;
             Process.Start(result);
         }
     }

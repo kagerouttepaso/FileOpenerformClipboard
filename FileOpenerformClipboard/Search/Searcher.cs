@@ -1,5 +1,4 @@
 ﻿using FileOpenerformClipboard.Helper;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,7 +12,7 @@ namespace FileOpenerformClipboard.Search
         /// <summary>
         /// Windowsのファイルパスで許されないもの
         /// </summary>
-        private static IReadOnlyList<char> invalidCharsWindowsPath = new List<char>
+        private static readonly IReadOnlyList<char> s_invalidCharsWindowsPath = new List<char>
                 {
                     '\\',
                     '/',
@@ -30,7 +29,7 @@ namespace FileOpenerformClipboard.Search
         /// くっ付ける行数
         /// 5行より多く分割する人はめったにいないはず
         /// </summary>
-        private static int ConcatLineSize { get; } = 5;
+        private static readonly int s_concatLineSize = 8;
 
         /// <summary>
         /// クリップボードから受け取った文字列
@@ -40,7 +39,7 @@ namespace FileOpenerformClipboard.Search
             get => _clipboardString;
             set
             {
-                if(_clipboardString == value) return;
+                if (_clipboardString == value) return;
                 _clipboardString = value;
                 _canditatesSize = null;
             }
@@ -55,10 +54,10 @@ namespace FileOpenerformClipboard.Search
         {
             get
             {
-                var icPre = invalidCharsWindowsPath
+                var icPre = s_invalidCharsWindowsPath
                     .Where(x => x != '\\') // ネットワーク上のファイルは\\から始まるので除外
                     .ToArray();
-                var icPost = invalidCharsWindowsPath
+                var icPost = s_invalidCharsWindowsPath
                     .ToArray();
 
                 // 行両端の無効文字を削除するメソッド
@@ -99,8 +98,8 @@ namespace FileOpenerformClipboard.Search
                     .Select(x => x.index)
                     .ToArray();
 
-                // フォーマットの正しい行から5行分ずつ文字列を取り出す
-                return indexs.Select(i => StringElements.Skip(i).Take(ConcatLineSize));
+                // フォーマットの正しい行から10行分ずつ文字列を取り出す
+                return indexs.Select(i => StringElements.Skip(i).Take(s_concatLineSize));
             }
         }
 
@@ -111,7 +110,7 @@ namespace FileOpenerformClipboard.Search
         {
             get
             {
-                if(!_canditatesSize.HasValue)
+                if (!_canditatesSize.HasValue)
                 {
                     _canditatesSize = SearchStringList
                         .SelectMany(x => x.FilePathBuilder())
@@ -131,18 +130,7 @@ namespace FileOpenerformClipboard.Search
         /// <summary>
         /// 検索済みの候補数
         /// </summary>
-        private int nowCount;
-
-        /// <summary>
-        /// 実行中フラグ
-        /// </summary>
-        public bool IsProsess
-        {
-            get => _isProsess == 1;
-            set => Interlocked.Exchange(ref _isProsess, value ? 1 : 0);
-        }
-
-        private int _isProsess;
+        private volatile int nowCount;
 
         /// <summary>
         /// コンストラクタ
@@ -157,39 +145,39 @@ namespace FileOpenerformClipboard.Search
         /// 有効なパス検索
         /// </summary>
         /// <returns>最も文字数の多い有効なパス</returns>
-        public async Task<string> GetValidPathAsync()
+        public Task<string> GetValidPathAsync()
         {
-            IsProsess = true;
             nowCount = 0;
-            return await Task.Run(() =>
-             {
-                 Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
-                 var result = SearchStringList.SelectMany(x => x.FilePathBuilder())
-                    // 並列検索
-                    .AsParallel()
-                    // 有効なファイルパスまたはURLなものを検索
-                    .Where(x =>
-                    {
-                        Interlocked.Increment(ref nowCount);
-                        if(Directory.Exists(x) || File.Exists(x))
-                        {
-                            return true;
-                        }
-                        else if(x.IsUrl())
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    })
-                    // 最も長いパスを返す
-                    .OrderByDescending(x => x.Count())
-                    .FirstOrDefault();
-                 IsProsess = false;
-                 return result;
-             });
+            return Task.Run(() =>
+            {
+                Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
+                var query = SearchStringList
+                   .SelectMany(x => x.FilePathBuilder());
+                var result = query
+                   // 並列検索
+                   .AsParallel()
+                   .WithDegreeOfParallelism(64)
+                   // 最も長いパスを返す
+                   .OrderByDescending(x => x.Count())
+                   // 有効なファイルパスまたはURLなものを検索
+                   .FirstOrDefault(x =>
+                   {
+                       Interlocked.Increment(ref nowCount);
+                       if (Directory.Exists(x) || File.Exists(x))
+                       {
+                           return true;
+                       }
+                       else if (x.IsUrl())
+                       {
+                           return true;
+                       }
+                       else
+                       {
+                           return false;
+                       }
+                   });
+                return result;
+            });
         }
     }
 }
