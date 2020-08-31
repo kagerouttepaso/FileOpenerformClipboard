@@ -23,7 +23,7 @@ namespace FileOpenerformClipboard.Search
         /// くっ付ける行数
         /// 5行より多く分割する人はめったにいないはず
         /// </summary>
-        private static readonly int s_concatLineSize = 8;
+        private static readonly int s_concatLineSize = 5;
 
         /// <summary>
         /// クリップボードから受け取った文字列
@@ -35,34 +35,47 @@ namespace FileOpenerformClipboard.Search
             {
                 if (_clipboardString == value) return;
                 _clipboardString = value;
-                _canditatesSize = null;
 
                 _stringElements = new Lazy<IEnumerable<string>>(() =>
-               {
-                   // 行両端の無効文字を削除するメソッド
-                   // 単純に空白だけでなく、下記のURLのような
-                   // 両側にファイルパスに使えない記号で修飾された文字も削除する
-                   // __<__URL__>
-                   string trimMethod(string str)
-                   {
-                       var t = str.Trim().TrimStart(s_icPre).TrimEnd(s_icPost);
-                       // 除去する文字がなくなるまで再帰する
-                       return t.Length == str.Length ?
-                                  t :
-                                  trimMethod(t);
-                   }
+                {
+                    // 行両端の無効文字を削除するメソッド
+                    // 単純に空白だけでなく、下記のURLのような
+                    // 両側にファイルパスに使えない記号で修飾された文字も削除する
+                    // __<__URL__>
+                    string trimMethod(string str)
+                    {
+                        var t = str.Trim().TrimStart(s_icPre).TrimEnd(s_icPost);
+                        // 除去する文字がなくなるまで再帰する
+                        return t.Length == str.Length ?
+                                   t :
+                                   trimMethod(t);
+                    }
 
-                   return _clipboardString
-                       //改行コード変更後
-                       .Replace("\r\n", "\n")
-                       .Replace("\r", "\n")
-                       .Split('\n')
-                       //各行の装飾を削除
-                       .Select(x => trimMethod(x))
-                       //空行を削除
-                       .Where(x => !string.IsNullOrWhiteSpace(x))
-                       .ToArray();
-               });
+                    return _clipboardString
+                        //改行コード変更後
+                        .Replace("\r\n", "\n")
+                        .Replace("\r", "\n")
+                        .Split('\n')
+                        //各行の装飾を削除
+                        .Select(x => trimMethod(x))
+                        //空行を削除
+                        .Where(x => !string.IsNullOrWhiteSpace(x))
+                        .ToArray();
+                });
+
+                _searchStringList = new Lazy<IEnumerable<IEnumerable<string>>>(() =>
+                {
+                    var indexs = StringElements
+                        .Select((row, index) => (index, row))
+                        .Where(x => x.row.IsUrl() || x.row.IsFilePath()) // 少なくとも連結する行先頭はフォーマットが正しいはず
+                        .Select(x => x.index)
+                        .ToArray();
+
+                    // フォーマットの正しい行から5行分ずつ文字列を取り出す
+                    return indexs.Select(i => StringElements.Skip(i).Take(s_concatLineSize));
+                });
+
+                _canditatesSize = null;
             }
         }
 
@@ -78,20 +91,9 @@ namespace FileOpenerformClipboard.Search
         /// <summary>
         /// 検索用の行コレクションのコレクション
         /// </summary>
-        private IEnumerable<IEnumerable<string>> SearchStringList
-        {
-            get
-            {
-                var indexs = StringElements
-                    .Select((row, index) => (index, row))
-                    .Where(x => x.row.IsUrl() || x.row.IsFilePath()) // 少なくとも連結する行先頭はフォーマットが正しいはず
-                    .Select(x => x.index)
-                    .ToArray();
+        private IEnumerable<IEnumerable<string>> SearchStringList => _searchStringList.Value;
 
-                // フォーマットの正しい行から10行分ずつ文字列を取り出す
-                return indexs.Select(i => StringElements.Skip(i).Take(s_concatLineSize));
-            }
-        }
+        private Lazy<IEnumerable<IEnumerable<string>>> _searchStringList;
 
         /// <summary>
         /// 候補数
@@ -149,8 +151,7 @@ namespace FileOpenerformClipboard.Search
             bool isValid(string filename)
             {
                 Interlocked.Increment(ref _nowCount);
-                if (Constants.InvalidCharsWindowsPath.All(c => !filename.Contains(c))
-                   && (Directory.Exists(filename) || File.Exists(filename)))
+                if (Directory.Exists(filename) || File.Exists(filename))
                 {
                     Interlocked.Increment(ref _hits);
                     return true;
@@ -169,18 +170,16 @@ namespace FileOpenerformClipboard.Search
             return await Task.Run(() =>
             {
                 Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
-                var query = SearchStringList
-                    .SelectMany(x => x.FilePathBuilder());
-                var result = query
+
+                return SearchStringList
+                    .SelectMany(x => x.FilePathBuilder())
                     // 並列検索
                     .AsParallel()
-                    .WithDegreeOfParallelism(64)
                     // 有効なファイルパスまたはURLなものを検索
                     .Where(x => isValid(x))
                     // 最も長いパスを返す
                     .OrderByDescending(x => x.Count())
                     .FirstOrDefault();
-                return result;
             })
             .ConfigureAwait(false);
         }

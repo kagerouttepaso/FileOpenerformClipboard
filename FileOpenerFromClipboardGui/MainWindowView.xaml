@@ -28,7 +28,7 @@
             Grid.Row="1"
             Grid.RowSpan="1"
             Height="30"
-            Value="{Binding Progress}" />
+            Value="{Binding Progress, Mode=OneWay}" />
         <Button
             Grid.Row="2"
             Grid.RowSpan="1"
