@@ -1,4 +1,5 @@
 ﻿using FileOpenerformClipboard.Helper;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,21 +10,14 @@ namespace FileOpenerformClipboard.Search
 {
     public class Searcher
     {
-        /// <summary>
-        /// Windowsのファイルパスで許されないもの
-        /// </summary>
-        private static readonly IReadOnlyList<char> s_invalidCharsWindowsPath = new List<char>
-                {
-                    '\\',
-                    '/',
-                    ':',
-                    '*',
-                    // '?', URLで使われているので許す
-                    '"',
-                    '<',
-                    '>',
-                    '|'
-                };
+        private static readonly char[] s_icPre = Constants.InvalidCharsWindowsPath
+            .Except(Constants.ValidCharsUrlPath)
+            .ToArray();
+
+        private static readonly char[] s_icPost = Constants.InvalidCharsWindowsPath
+            .Except(Constants.ValidCharsUrlPath)
+            .Append('\\')
+            .ToArray();
 
         /// <summary>
         /// くっ付ける行数
@@ -42,6 +36,33 @@ namespace FileOpenerformClipboard.Search
                 if (_clipboardString == value) return;
                 _clipboardString = value;
                 _canditatesSize = null;
+
+                _stringElements = new Lazy<IEnumerable<string>>(() =>
+               {
+                   // 行両端の無効文字を削除するメソッド
+                   // 単純に空白だけでなく、下記のURLのような
+                   // 両側にファイルパスに使えない記号で修飾された文字も削除する
+                   // __<__URL__>
+                   string trimMethod(string str)
+                   {
+                       var t = str.Trim().TrimStart(s_icPre).TrimEnd(s_icPost);
+                       // 除去する文字がなくなるまで再帰する
+                       return t.Length == str.Length ?
+                                  t :
+                                  trimMethod(t);
+                   }
+
+                   return _clipboardString
+                       //改行コード変更後
+                       .Replace("\r\n", "\n")
+                       .Replace("\r", "\n")
+                       .Split('\n')
+                       //各行の装飾を削除
+                       .Select(x => trimMethod(x))
+                       //空行を削除
+                       .Where(x => !string.IsNullOrWhiteSpace(x))
+                       .ToArray();
+               });
             }
         }
 
@@ -50,40 +71,9 @@ namespace FileOpenerformClipboard.Search
         /// <summary>
         /// いい感じに整形した行コレクション
         /// </summary>
-        private IEnumerable<string> StringElements
-        {
-            get
-            {
-                var icPre = s_invalidCharsWindowsPath
-                    .Where(x => x != '\\') // ネットワーク上のファイルは\\から始まるので除外
-                    .ToArray();
-                var icPost = s_invalidCharsWindowsPath
-                    .ToArray();
+        private IEnumerable<string> StringElements => _stringElements.Value;
 
-                // 行両端の無効文字を削除するメソッド
-                // 単純に空白だけでなく、下記のURLのような
-                // 両側にファイルパスに使えない記号で修飾された文字も削除する
-                // __<__URL__>
-                string trimMethod(string str)
-                {
-                    var t = str.Trim().TrimStart(icPre).TrimEnd(icPost);
-                    // 除去する文字がなくなるまで再帰する
-                    return t.Length == str.Length ?
-                        t :
-                        trimMethod(t);
-                }
-
-                return ClipboardString
-                //改行コード変更後
-                .Replace("\r\n", "\n")
-                .Replace("\r", "\n")
-                .Split('\n')
-                //各行の装飾を削除
-                .Select(x => trimMethod(x))
-                //空行を削除
-                .Where(x => x != string.Empty);
-            }
-        }
+        private Lazy<IEnumerable<string>> _stringElements;
 
         /// <summary>
         /// 検索用の行コレクションのコレクション
@@ -93,7 +83,7 @@ namespace FileOpenerformClipboard.Search
             get
             {
                 var indexs = StringElements
-                    .Select((row, index) => new { index, row })
+                    .Select((row, index) => (index, row))
                     .Where(x => x.row.IsUrl() || x.row.IsFilePath()) // 少なくとも連結する行先頭はフォーマットが正しいはず
                     .Select(x => x.index)
                     .ToArray();
@@ -125,12 +115,19 @@ namespace FileOpenerformClipboard.Search
         /// <summary>
         /// 進捗
         /// </summary>
-        public double Progress { get => nowCount == 0 ? 0.0 : (double)nowCount / CandidatesSize; }
+        public double Progress { get => _nowCount == 0 ? 0.0 : (double)_nowCount / CandidatesSize; }
 
         /// <summary>
         /// 検索済みの候補数
         /// </summary>
-        private volatile int nowCount;
+        private volatile int _nowCount;
+
+        /// <summary>
+        /// 検索ヒット数
+        /// </summary>
+        public int Hits => _hits;
+
+        private volatile int _hits;
 
         /// <summary>
         /// コンストラクタ
@@ -145,39 +142,47 @@ namespace FileOpenerformClipboard.Search
         /// 有効なパス検索
         /// </summary>
         /// <returns>最も文字数の多い有効なパス</returns>
-        public Task<string> GetValidPathAsync()
+        public async Task<string> GetValidPathAsync()
         {
-            nowCount = 0;
-            return Task.Run(() =>
+            _hits = 0;
+            _nowCount = 0;
+            bool isValid(string filename)
+            {
+                Interlocked.Increment(ref _nowCount);
+                if (Constants.InvalidCharsWindowsPath.All(c => !filename.Contains(c))
+                   && (Directory.Exists(filename) || File.Exists(filename)))
+                {
+                    Interlocked.Increment(ref _hits);
+                    return true;
+                }
+                else if (filename.IsUrl())
+                {
+                    Interlocked.Increment(ref _hits);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            return await Task.Run(() =>
             {
                 Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
                 var query = SearchStringList
-                   .SelectMany(x => x.FilePathBuilder());
+                    .SelectMany(x => x.FilePathBuilder());
                 var result = query
-                   // 並列検索
-                   .AsParallel()
-                   .WithDegreeOfParallelism(64)
-                   // 最も長いパスを返す
-                   .OrderByDescending(x => x.Count())
-                   // 有効なファイルパスまたはURLなものを検索
-                   .FirstOrDefault(x =>
-                   {
-                       Interlocked.Increment(ref nowCount);
-                       if (Directory.Exists(x) || File.Exists(x))
-                       {
-                           return true;
-                       }
-                       else if (x.IsUrl())
-                       {
-                           return true;
-                       }
-                       else
-                       {
-                           return false;
-                       }
-                   });
+                    // 並列検索
+                    .AsParallel()
+                    .WithDegreeOfParallelism(64)
+                    // 有効なファイルパスまたはURLなものを検索
+                    .Where(x => isValid(x))
+                    // 最も長いパスを返す
+                    .OrderByDescending(x => x.Count())
+                    .FirstOrDefault();
                 return result;
-            });
+            })
+            .ConfigureAwait(false);
         }
     }
 }

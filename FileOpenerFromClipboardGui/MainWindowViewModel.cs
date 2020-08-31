@@ -47,18 +47,18 @@ namespace FileOpenerFromClipboardGui
             // 検索クラス生成
             var Searcher = new Searcher(clipboardString);
 
-            Debug.WriteLine("search {0} file paths", Searcher.CandidatesSize);
+            Trace.WriteLine($"search {Searcher.CandidatesSize} file paths");
 
             //検索開始
             var hitPath = Searcher.GetValidPathAsync();
 
             // 検索中のプログレスバー更新
-            var nonWait = Task.Run(async () =>
+            await Task.Run(async () =>
             {
                 var waitTime = TimeSpan.FromSeconds(1.0 / 60);
                 while (!hitPath.IsCompleted)
                 {
-                    Debug.WriteLine(Searcher.Progress.ToString("##.0%"));
+                    Trace.WriteLine($"{Searcher.Progress:#0.0%} {Searcher.Hits}");
                     Progress = Searcher.Progress * 100;
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Progress)));
                     await Task.Delay(waitTime); // = 60fps

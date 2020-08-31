@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Threading;
+using System.Windows.Forms;
 
 namespace FileOpenerformClipboard.Helper
 {
@@ -7,16 +8,16 @@ namespace FileOpenerformClipboard.Helper
         public string GetText()
         {
             string clipboardString = default(string);
-            var t = new System.Threading.Thread(() =>
+            var t = new Thread(() =>
             {
                 //クリップボードから取得
                 var clipboardObject = Clipboard.GetDataObject();
 
                 //文字列の取得、出来なかったら終了
-                if(!clipboardObject.GetDataPresent(DataFormats.Text)) return;
+                if (!clipboardObject.GetDataPresent(DataFormats.Text)) return;
                 clipboardString = clipboardObject.GetData(DataFormats.Text) as string;
             });
-            t.SetApartmentState(System.Threading.ApartmentState.STA);
+            t.SetApartmentState(ApartmentState.STA);
             t.Start();
             t.Join();
             return clipboardString;
