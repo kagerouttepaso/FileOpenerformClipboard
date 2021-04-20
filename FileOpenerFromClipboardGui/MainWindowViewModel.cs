@@ -56,19 +56,22 @@ namespace FileOpenerFromClipboardGui
             var hitPath = Searcher.GetValidPathAsync();
 
             // 検索中のプログレスバー更新
-            await Task.Run(async () =>
+            var t = Task.Run(async () =>
             {
                 var waitTime = TimeSpan.FromSeconds(1.0 / 60);
                 while (!hitPath.IsCompleted)
                 {
-                    Trace.WriteLine($"{Searcher.Progress:#0.0%} {Searcher.Hits}");
+                    Trace.WriteLine($"{Searcher.Progress:#0.0%} {Searcher.CandidatesSize}/{Searcher.NowCount} {Searcher.Hits}");
                     Progress = Searcher.Progress * 100;
                     await Task.Delay(waitTime) // = 60fps
                         .ConfigureAwait(false);
                 }
+
                 Progress = Searcher.Progress * 100;
-            })
-            .ConfigureAwait(false);
+                Trace.WriteLine($"{Searcher.Progress:#0.0%} {Searcher.CandidatesSize}/{Searcher.NowCount} {Searcher.Hits}");
+            });
+
+            await Task.WhenAll(hitPath, t);
 
             //ヒットしていれば開く
             var result = await hitPath;

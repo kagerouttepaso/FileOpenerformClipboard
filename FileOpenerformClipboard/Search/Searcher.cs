@@ -1,6 +1,7 @@
 ﻿using FileOpenerformClipboard.Helper;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -120,6 +121,11 @@ namespace FileOpenerformClipboard.Search
         public double Progress { get => _nowCount == 0 ? 0.0 : (double)_nowCount / CandidatesSize; }
 
         /// <summary>
+        /// 検査策済みの候補数
+        /// </summary>
+        public int NowCount => _nowCount;
+
+        /// <summary>
         /// 検索済みの候補数
         /// </summary>
         private volatile int _nowCount;
@@ -151,14 +157,18 @@ namespace FileOpenerformClipboard.Search
             bool isValid(string filename)
             {
                 Interlocked.Increment(ref _nowCount);
+                Thread.Sleep(10);
+
                 if (Directory.Exists(filename) || File.Exists(filename))
                 {
                     Interlocked.Increment(ref _hits);
+                    Debug.WriteLine(filename);
                     return true;
                 }
                 else if (filename.IsUrl())
                 {
                     Interlocked.Increment(ref _hits);
+                    Debug.WriteLine(filename);
                     return true;
                 }
                 else
@@ -171,15 +181,27 @@ namespace FileOpenerformClipboard.Search
             {
                 Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
 
-                return SearchStringList
-                    .SelectMany(x => x.FilePathBuilder())
-                    // 並列検索
-                    .AsParallel()
-                    // 有効なファイルパスまたはURLなものを検索
-                    .Where(x => isValid(x))
-                    // 最も長いパスを返す
-                    .OrderByDescending(x => x.Count())
-                    .FirstOrDefault();
+                string _hitName = null;
+                Parallel.ForEach(
+                    source: SearchStringList
+                        .SelectMany(x => x.FilePathBuilder())
+                        // 最も長いパスを返す
+                        .OrderByDescending(x => x.Length),
+                    parallelOptions: new ParallelOptions() { },
+                    body: filename =>
+                    {
+                        if ((_hitName?.Length ?? 0) >= filename.Length) { return; }
+                        if (!isValid(filename)) { return; }
+
+                        // Lock Free Update
+                        string baseValue;
+                        do
+                        {
+                            baseValue = _hitName;
+                            if ((baseValue?.Length ?? 0) >= filename.Length) { return; }
+                        } while (baseValue != Interlocked.CompareExchange(ref _hitName, filename, baseValue));
+                    });
+                return _hitName;
             })
             .ConfigureAwait(false);
         }
