@@ -53,7 +53,7 @@ namespace FileOpenerFromClipboardGui
             Trace.WriteLine($"search {Searcher.CandidatesSize} file paths");
 
             //検索開始
-            var hitPath = Searcher.GetValidPathAsync();
+            var hitPath = Searcher.GetValidPathAsync(32);
 
             // 検索中のプログレスバー更新
             var t = Task.Run(async () =>
@@ -61,14 +61,14 @@ namespace FileOpenerFromClipboardGui
                 var waitTime = TimeSpan.FromSeconds(1.0 / 60);
                 while (!hitPath.IsCompleted)
                 {
-                    Trace.WriteLine($"{Searcher.Progress:#0.0%} {Searcher.CandidatesSize}/{Searcher.NowCount} {Searcher.Hits}");
+                    Trace.WriteLine($"{Searcher.Progress:#0.0%} {Searcher.NowCount}/{Searcher.CandidatesSize} {Searcher.Hits}");
                     Progress = Searcher.Progress * 100;
                     await Task.Delay(waitTime) // = 60fps
                         .ConfigureAwait(false);
                 }
 
                 Progress = Searcher.Progress * 100;
-                Trace.WriteLine($"{Searcher.Progress:#0.0%} {Searcher.CandidatesSize}/{Searcher.NowCount} {Searcher.Hits}");
+                Trace.WriteLine($"{Searcher.Progress:#0.0%} {Searcher.NowCount}/{Searcher.CandidatesSize} {Searcher.Hits}");
             });
 
             await Task.WhenAll(hitPath, t);

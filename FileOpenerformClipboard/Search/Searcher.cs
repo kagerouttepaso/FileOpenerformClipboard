@@ -150,7 +150,7 @@ namespace FileOpenerformClipboard.Search
         /// 有効なパス検索
         /// </summary>
         /// <returns>最も文字数の多い有効なパス</returns>
-        public async Task<string> GetValidPathAsync()
+        public async Task<string> GetValidPathAsync(int? parallelCount = null)
         {
             _hits = 0;
             _nowCount = 0;
@@ -187,7 +187,9 @@ namespace FileOpenerformClipboard.Search
                         .SelectMany(x => x.FilePathBuilder())
                         // 最も長いパスを返す
                         .OrderByDescending(x => x.Length),
-                    parallelOptions: new ParallelOptions() { },
+                    parallelOptions: new ParallelOptions() {
+                        MaxDegreeOfParallelism = parallelCount ?? -1,
+                    },
                     body: filename =>
                     {
                         if ((_hitName?.Length ?? 0) >= filename.Length) { return; }
